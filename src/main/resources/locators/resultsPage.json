@@ -1,0 +1,10 @@
+{
+  "resultsContainer": {
+    "type": "css",
+    "value": ".flight-list-wrapper"
+  },
+  "flightCard": {
+    "type": "css",
+    "value": ".flight-list-item"
+  }
+}

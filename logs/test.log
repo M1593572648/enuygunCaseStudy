@@ -1,0 +1,24 @@
+17:06:24 INFO  [main] WebDriverManager - Using chromedriver 142.0.7444.175 (resolved driver for Chrome 142)
+17:06:24 INFO  [main] Downloader - Downloading https://storage.googleapis.com/chrome-for-testing-public/142.0.7444.175/win64/chromedriver-win64.zip
+17:06:25 INFO  [main] Downloader - Extracting driver from compressed file chromedriver-win64.zip
+17:06:25 INFO  [main] WebDriverManager - Exporting webdriver.chrome.driver as C:\Users\mehme\.cache\selenium\chromedriver\win64\142.0.7444.175\chromedriver.exe
+17:12:49 INFO  [main] WebDriverManager - Using chromedriver 142.0.7444.175 (resolved driver for Chrome 142)
+17:12:49 INFO  [main] WebDriverManager - Exporting webdriver.chrome.driver as C:\Users\mehme\.cache\selenium\chromedriver\win64\142.0.7444.175\chromedriver.exe
+17:18:45 INFO  [main] WebDriverManager - Using chromedriver 142.0.7444.175 (resolved driver for Chrome 142)
+17:18:45 INFO  [main] WebDriverManager - Exporting webdriver.chrome.driver as C:\Users\mehme\.cache\selenium\chromedriver\win64\142.0.7444.175\chromedriver.exe
+17:24:36 INFO  [main] DriverFactory - Browser seçildi: chrome
+17:24:36 WARN  [main] DriverFactory - ⚠ Local ChromeDriver bulunamadı → WebDriverManager devrede
+17:24:36 INFO  [main] WebDriverManager - Using chromedriver 142.0.7444.175 (resolved driver for Chrome 142)
+17:24:36 INFO  [main] WebDriverManager - Exporting webdriver.chrome.driver as C:\Users\mehme\.cache\selenium\chromedriver\win64\142.0.7444.175\chromedriver.exe
+17:25:20 INFO  [main] DriverFactory - Browser seçildi: chrome
+17:25:20 INFO  [main] DriverFactory - ✔ Local ChromeDriver kullanılacak → src/main/resources/drivers/chromedriver.exe
+17:28:03 INFO  [main] DriverFactory - Browser seçildi: chrome
+17:28:03 INFO  [main] DriverFactory - ✔ Local ChromeDriver kullanılacak → src/main/resources/drivers/chromedriver.exe
+17:54:07 INFO  [main] DriverFactory - Browser seçildi: chrome
+17:54:07 INFO  [main] DriverFactory - ✔ Local ChromeDriver kullanılacak → src/main/resources/drivers/chromedriver.exe
+17:55:53 INFO  [main] DriverFactory - Browser seçildi: chrome
+17:55:53 INFO  [main] DriverFactory - ✔ Local ChromeDriver kullanılacak → src/main/resources/drivers/chromedriver.exe
+18:06:20 INFO  [main] DriverFactory - Browser seçildi: chrome
+18:06:20 INFO  [main] DriverFactory - ✔ Local ChromeDriver kullanılacak → src/main/resources/drivers/chromedriver.exe
+18:21:09 INFO  [main] DriverFactory - Browser seçildi: chrome
+18:21:09 INFO  [main] DriverFactory - ✔ Local ChromeDriver kullanılacak → src/main/resources/drivers/chromedriver.exe

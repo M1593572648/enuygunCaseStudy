@@ -1,0 +1,35 @@
+{
+  "fromInput": {
+    "type": "id",
+    "value": "FlightSearchForm_orig"
+  },
+  "toInput": {
+    "type": "id",
+    "value": "FlightSearchForm_dest"
+  },
+  "departureDate": {
+    "type": "xpath",
+    "value": "//input[@id='FlightSearchForm_departureDate']"
+  },
+  "returnDate": {
+    "type": "xpath",
+    "value": "//input[@id='FlightSearchForm_returnDate']"
+  },
+  "searchButton": {
+    "type": "css",
+    "value": ".sc-bcXHqe.gZxkaz"
+  },
+  "preferencesButton": {
+    "type": "id",
+    "value": "onetrust-pc-btn-handler"
+  },
+  "acceptButton": {
+    "type": "id",
+    "value": "onetrust-accept-btn-handler"
+  },
+  "buttonGroup": {
+    "type": "id",
+    "value": "onetrust-button-group"
+  }
+
+}
