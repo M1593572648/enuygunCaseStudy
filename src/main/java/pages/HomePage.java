@@ -15,16 +15,26 @@ public class HomePage extends BasePage {
 
 
     public void enterFrom(String from) {
-        clickHelper.click(find("fromInput"), from);
-        interactionHelper.clearAndType(find("fromInput"), from);
+        clickHelper.click(find("fromInput"), "fromInput");
+        interactionHelper.type(find("fromInput"), from, "fromInput");
+        interactionHelper.pressEnterKey(find("fromInput"), "fromInput");
     }
 
-    public void enterTo(String to) {
-        clickHelper.click(find("toInput"), to);
-        interactionHelper.clearAndType(find("toInput"), to);
+
+    public void enterToWhere(String where) {
+        clickHelper.click(find("whereInput"), "whereInput");
+        interactionHelper.type(find("whereInput"), where, "whereInput");
+        waitHelper.waitFor1Sec();
+        interactionHelper.pressEnterKey(find("whereInput"),"whereInput");
     }
 
+    public void clickToDate(){
+        clickHelper.click(find("dateInput"), "dateInput");
+    }
+    public void clickRoundTrip(){
+        clickHelper.doubleClick(find("roundTrip"),"roundTrip");
+    }
     public void clickSearch() {
-        clickHelper.jsClick(find("searchButton"));
+        clickHelper.click(find("searchButton"), "searchButton");
     }
 }

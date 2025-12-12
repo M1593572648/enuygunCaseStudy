@@ -12,6 +12,15 @@
     </Appenders>
 
     <Loggers>
+
+        <Logger name="org.openqa.selenium.devtools" level="error" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="org.openqa.selenium.chromium" level="error" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
         <Root level="info">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="LogFile"/>

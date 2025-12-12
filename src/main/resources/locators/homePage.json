@@ -1,11 +1,15 @@
 {
   "fromInput": {
-    "type": "id",
-    "value": "FlightSearchForm_orig"
+    "type": "css",
+    "value": "input[data-testid='endesign-flight-origin-autosuggestion-input']"
   },
-  "toInput": {
-    "type": "id",
-    "value": "FlightSearchForm_dest"
+  "whereInput": {
+    "type": "css",
+    "value": "input[data-testid='endesign-flight-destination-autosuggestion-input']"
+  },
+  "roundTrip": {
+    "type": "css",
+    "value": "div[data-testid='search-round-trip-text']"
   },
   "departureDate": {
     "type": "xpath",
