@@ -77,9 +77,6 @@ public class HomePageSteps {
     }
 
 /*
-
-
-
     @Then("uçuş listesinde tüm kalkış saatleri 10:00 - 18:00 aralığında olmalı")
     @Then("all departure times should be between 10:00 and 18:00")
     public void verify_departure_times() {

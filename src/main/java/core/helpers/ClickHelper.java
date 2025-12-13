@@ -45,8 +45,32 @@ public class ClickHelper {
         throw new RuntimeException("Element not clickable: " + keyName);
     }
 
-    public void jsClick(WebElement element) {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+    /**
+     * Elementi kontrol ederek güvenli Javascript Click işlemi yapar.
+     * @param element Tıklanacak WebElement
+     * @param keyName Loglarda görünecek element adı
+     */
+    public void jsClick(WebElement element, String keyName) {
+        // Elementin teknik tanımını (toString) alalım, null ise belirtelim
+        String elementDescription = (element != null) ? element.toString() : "Tanımsız (NULL)";
+
+        log.info("➡ '{}' elementine JS Click işlemi deneniyor... (Detay: {})", keyName, elementDescription);
+
+        if (element != null) {
+            try {
+                // JavascriptExecutor'a cast edip tıklama işlemini yapıyoruz
+                JavascriptExecutor executor = (JavascriptExecutor) driver;
+                executor.executeScript("arguments[0].click();", element);
+
+                log.info("✔ '{}' elementine JS Click başarıyla tamamlandı.", keyName);
+            } catch (Exception e) {
+                // JS hatası veya StaleElementReference gibi durumlarda burası çalışır
+                log.error("❌ '{}' elementine JS Click sırasında hata oluştu! Hata: {}", keyName, e.getMessage());
+            }
+        } else {
+            // Element null ise işlem yapma ve uyarı ver
+            log.warn("⚠ '{}' elementi NULL olduğu için JS Click işlemi İPTAL EDİLDİ!", keyName);
+        }
     }
 
     public void highlightAndClick(WebElement element) {

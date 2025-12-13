@@ -106,6 +106,58 @@ public class WaitHelper {
         }
     }
 
+    /**
+     * DOM'da var mı diye kontrol ederek, görünür olmasını bekler.
+     * 5 saniye boyunca retry yapar. Bulamazsa iframe kontrolü yapar.
+     *
+     * @param locator Aranacak elementin By locator'ı
+     * @param keyName JSON key veya açıklama
+     * @param pollIntervalMs Deneme aralığı (milisaniye)
+     * @return WebElement
+     */
+    public WebElement findWithRetryAndIframe(By locator, String keyName, int pollIntervalMs) {
+        int initialTimeoutS = 5;
+        long endTime = System.currentTimeMillis() + initialTimeoutS * 1000L;
+
+        // 1️⃣ Önce direkt DOM'da dene
+        while (System.currentTimeMillis() < endTime) {
+            try {
+                List<WebElement> elements = driver.findElements(locator);
+                if (!elements.isEmpty() && elements.get(0).isDisplayed()) {
+                    log.info("✔ '{}' elementi DOM'da bulundu ve görünür.", keyName);
+                    return elements.get(0);
+                }
+                Thread.sleep(pollIntervalMs);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Retry interrupted for element: " + keyName, e);
+            }
+        }
+
+        // 2️⃣ Eğer bulunamadıysa iframe var mı kontrol et
+        List<WebElement> iframes = driver.findElements(By.tagName("iframe"));
+        if (!iframes.isEmpty()) {
+            log.info("➡ Iframe bulundu, '{}' elementini iframe içinde arayacağız...", keyName);
+            for (WebElement frame : iframes) {
+                try {
+                    driver.switchTo().frame(frame);
+                    List<WebElement> elementsInFrame = driver.findElements(locator);
+                    if (!elementsInFrame.isEmpty() && elementsInFrame.get(0).isDisplayed()) {
+                        log.info("✔ '{}' elementi iframe içinde bulundu ve görünür.", keyName);
+                        return elementsInFrame.get(0);
+                    }
+                } finally {
+                    driver.switchTo().defaultContent(); // iframe’den çık
+                }
+            }
+        } else {
+            log.info("⚠ Iframe bulunamadı. Element iframe içinde değil.");
+        }
+
+        throw new TimeoutException("'" + keyName + "' elementi DOM'da veya iframe içinde görünür hale gelmedi.");
+    }
+
+
     public WebElement waitForPresence(By locator, String keyName) {
         log.info("➡ '{}' elementinin DOM'da varlığı bekleniyor...", keyName);
         try {
@@ -129,20 +181,194 @@ public class WaitHelper {
             throw e;
         }
     }
+
+
     /**
-     * Basit 200ms bekleme fonksiyonu
+     * DOM'da var mı diye kontrol ederek, görünür olmasını bekler.
+     * Element DOM'a eklenene kadar veya iframe içinde JS ile görünür yapılarak retry yapılır.
+     *
+     * @param locator Aranacak elementin By locator'ı
+     * @param keyName JSON key veya açıklama
+     * @param pollIntervalMs Deneme aralığı (milisaniye)
+     * @return WebElement
+     */
+    public WebElement findWithRetryAndIframeJs(By locator, String keyName, int pollIntervalMs) {
+        int initialTimeoutS = 5;
+        long endTime = System.currentTimeMillis() + initialTimeoutS * 1000L;
+
+        // 1️⃣ Önce direkt DOM'da dene
+        while (System.currentTimeMillis() < endTime) {
+            try {
+                List<WebElement> elements = driver.findElements(locator);
+                if (!elements.isEmpty() && elements.get(0).isDisplayed()) {
+                    log.info("✔ '{}' elementi DOM'da bulundu ve görünür.", keyName);
+                    return elements.get(0);
+                }
+                Thread.sleep(pollIntervalMs);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Retry interrupted for element: " + keyName, e);
+            }
+        }
+
+        // 2️⃣ Eğer bulunamadıysa iframe var mı kontrol et
+        List<WebElement> iframes = driver.findElements(By.tagName("iframe"));
+        if (!iframes.isEmpty()) {
+            log.info("➡ Iframe bulundu, '{}' elementini iframe içinde arayacağız...", keyName);
+            for (WebElement frame : iframes) {
+                try {
+                    driver.switchTo().frame(frame);
+                    List<WebElement> elementsInFrame = driver.findElements(locator);
+                    if (!elementsInFrame.isEmpty()) {
+                        WebElement element = elementsInFrame.get(0);
+                        // JS ile görünür yap
+                        ((JavascriptExecutor) driver).executeScript(
+                                "arguments[0].scrollIntoView({block:'center', inline:'center'});" +
+                                        "arguments[0].style.visibility='visible';" +
+                                        "arguments[0].style.display='block';", element
+                        );
+                        if (element.isDisplayed()) {
+                            log.info("✔ '{}' elementi iframe içinde JS ile görünür hale getirildi.", keyName);
+                            return element;
+                        }
+                    }
+                } finally {
+                    driver.switchTo().defaultContent(); // iframe’den çık
+                }
+            }
+        } else {
+            log.info("⚠ Iframe bulunamadı. Element iframe içinde değil.");
+        }
+
+        throw new TimeoutException("'" + keyName + "' elementi DOM'da veya iframe içinde görünür hale gelmedi.");
+    }
+
+
+    public WebElement findWithIframeAndShadowJs(By locator, String keyName, int pollIntervalMs) {
+        int initialTimeoutS = 5;
+        long endTime = System.currentTimeMillis() + initialTimeoutS * 1000L;
+
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+
+        // 1️⃣ Önce direkt DOM'da dene
+        while (System.currentTimeMillis() < endTime) {
+            try {
+                List<WebElement> elements = driver.findElements(locator);
+                if (!elements.isEmpty() && elements.get(0).isDisplayed()) {
+                    log.info("✔ '{}' elementi DOM'da bulundu ve görünür.", keyName);
+                    return elements.get(0);
+                }
+                Thread.sleep(pollIntervalMs);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Retry interrupted for element: " + keyName, e);
+            }
+        }
+
+        // 2️⃣ Iframe varsa iframe içinde dene
+        List<WebElement> iframes = driver.findElements(By.tagName("iframe"));
+        for (WebElement frame : iframes) {
+            try {
+                driver.switchTo().frame(frame);
+                long iframeEndTime = System.currentTimeMillis() + 5000; // iframe içinde 5s dene
+                while (System.currentTimeMillis() < iframeEndTime) {
+                    List<WebElement> elementsInFrame = driver.findElements(locator);
+                    if (!elementsInFrame.isEmpty()) {
+                        WebElement element = elementsInFrame.get(0);
+
+                        // JS ile scroll ve görünür yap
+                        js.executeScript(
+                                "arguments[0].scrollIntoView({block:'center', inline:'center'});" +
+                                        "arguments[0].style.visibility='visible';" +
+                                        "arguments[0].style.display='block';" +
+                                        "arguments[0].style.opacity='1';" +
+                                        "arguments[0].style.transform='none';", element
+                        );
+
+                        // Shadow DOM var mı kontrolü ve erişim
+                        WebElement shadowElement = null;
+                        try {
+                            shadowElement = (WebElement) js.executeScript(
+                                    "return arguments[0].shadowRoot ? arguments[0].shadowRoot.querySelector('#child-element') : null;",
+                                    element
+                            );
+                        } catch (Exception ignored) {}
+
+                        if (shadowElement != null) {
+                            // Shadow element görünür yap
+                            js.executeScript(
+                                    "arguments[0].scrollIntoView({block:'center', inline:'center'});" +
+                                            "arguments[0].style.visibility='visible';" +
+                                            "arguments[0].style.display='block';" +
+                                            "arguments[0].style.opacity='1';" +
+                                            "arguments[0].style.transform='none';", shadowElement
+                            );
+                            if (shadowElement.isDisplayed()) {
+                                log.info("✔ '{}' Shadow DOM elementi iframe içinde görünür hale getirildi.", keyName);
+                                return shadowElement;
+                            }
+                        } else {
+                            if (element.isDisplayed()) {
+                                log.info("✔ '{}' elementi iframe içinde JS ile görünür hale getirildi.", keyName);
+                                return element;
+                            }
+                        }
+                    }
+                    Thread.sleep(pollIntervalMs);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } finally {
+                driver.switchTo().defaultContent();
+            }
+        }
+
+        throw new TimeoutException("'" + keyName + "' elementi DOM, iframe veya Shadow DOM içinde görünür hale gelmedi.");
+    }
+
+
+    /**
+     * Basit 1s bekleme fonksiyonu
      */
     public void waitFor1Sec() {
-        log.info("⏱ 200ms bekleniyor...");
+        log.info("⏱ 1 saniye bekleniyor...");
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             log.warn("⚠ Bekleme sırasında hata oluştu: {}", e.getMessage());
             Thread.currentThread().interrupt();
         }
-        log.info("✔ 200ms bekleme tamamlandı.");
+        log.info("✔ 1 saniye bekleme tamamlandı.");
     }
-
+    public boolean isPresent(By locator, String keyName) {
+        try {
+            driver.findElement(locator);
+            log.info("ℹ️ '{}' elementi DOM'da bulundu.", keyName);
+            return true;
+        } catch (NoSuchElementException e) {
+            log.warn("⚠ '{}' elementi DOM'da bulunamadı.", keyName);
+            return false;
+        }
+    }
+    /**
+     * Belirtilen milisaniye kadar bekleme fonksiyonu
+     * @param milisaniye Beklenecek süre (milisaniye cinsinden).
+     */
+    public void waitFor(long milisaniye) {
+        // Loglama: milisaniye değişkenini kullanarak ne kadar bekleneceğini belirtir
+        log.info("⏱ {}ms bekleniyor...", milisaniye);
+        try {
+            // Parametreden gelen milisaniye değerini kullanır
+            Thread.sleep(milisaniye);
+        } catch (InterruptedException e) {
+            // Hata durumunda uyarı verir
+            log.warn("⚠ Bekleme sırasında hata oluştu: {}", e.getMessage());
+            // Mevcut thread'in kesilme durumunu tekrar ayarlar
+            Thread.currentThread().interrupt();
+        }
+        // Loglama: Beklemenin tamamlandığını belirtir
+        log.info("✔ {}ms bekleme tamamlandı.", milisaniye);
+    }
 
     public boolean waitUntilUrlContains(String text) {
         log.info("➡ URL'nin '{}' içermesi bekleniyor...", text);

@@ -1,4 +1,16 @@
 {
+  "pageBody": {
+    "type": "css",
+    "value": "body"
+  },
+  "bodyContentContainer": {
+    "type": "css",
+    "value": ".body-content"
+  },
+  "searchRootContainer": {
+    "type": "xpath",
+    "value": "//div[@id='SearchRoot']"
+  },
   "departureReturnTimeFilterHeader": {
     "type": "css",
     "value": "div.ctx-filter-departure-return-time.card-header"

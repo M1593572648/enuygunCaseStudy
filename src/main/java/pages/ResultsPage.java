@@ -11,8 +11,8 @@ public class ResultsPage extends BasePage {
     }
 
     public void clickRoundTripTime(){
-        waitHelper.waitForVisibleLog(find("leftSidebarContainer"),"leftSidebarContainer");
-        interactionHelper.scrollTo(find("departureReturnTimeFilterHeader"),"departureReturnTimeFilterHeader");
+
+        interactionHelper.scrollToElement(findByDomMax("departureReturnTimeFilterHeader"),"departureReturnTimeFilterHeader");
         clickHelper.click(find("departureReturnTimeFilterHeader"),"departureReturnTimeFilterHeader");
     }
 

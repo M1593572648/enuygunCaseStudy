@@ -75,6 +75,39 @@ public class BasePage {
         return element;
     }
 
+    /**
+     * JSON key ile locator alır, WaitHelper ile DOM kontrolü yapar.
+     * Element DOM'da var ise döndürür, yoksa retry ile bekler.
+     *
+     * @param key JSON key
+     * @return WebElement
+     */
+    public WebElement findByDomMax(String key) {
+        By locator = getLocator(key);
+        int totalTimeoutS = 30;      // 30 saniye toplam bekleme
+        int pollIntervalMs = 500;    // 500 ms aralıklarla retry
+
+        return waitHelper.findWithIframeAndShadowJs(locator, key, totalTimeoutS);
+    }
+    // ---- JSON → WebElement, DOM kontrolü, 30 saniye bekler ----
+    public WebElement findByDom(String key) {
+        By locator = getLocator(key);
+        try {
+            // 1. DOM'da var mı kontrol et
+            if (waitHelper.isPresent(locator, key)) {
+                log.info("'{}' elementi DOM'da bulundu. Görünür olması bekleniyor...", key);
+                // 2. Görünür olmasını bekle
+                return waitHelper.waitForVisible(locator, key);
+            } else {
+                log.warn("'{}' elementi DOM'da bulunamadı!", key);
+                return null;
+            }
+        } catch (Exception e) {
+            log.error("❌ '{}' elementi DOM'da bulunurken hata oluştu! Hata: {}", key, e.getMessage());
+            return null;
+        }
+    }
+
 
     // ---- JSON → List<WebElement> ----
     public List<WebElement> findAll(String key) {
