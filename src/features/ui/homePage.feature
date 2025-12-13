@@ -1,7 +1,6 @@
-Feature: Flight search
+Feature: Flight search UI Automation
 
-
-
+  #Case 1
   Scenario Outline: Basic Flight Search and Time Filter
     Given user is on the home page
     When user accepts cookies
@@ -22,6 +21,7 @@ Feature: Flight search
       | Istanbul  | Ankara    | 2026-01-01    | 2026-01-10 |    600         |    1080       |
       #| Ankara    | Istanbul |
 
+  #Case 2
   Scenario Outline:Price Sorting for Turkish Airlines
     Given user is on the home page
     When user accepts cookies
@@ -43,6 +43,7 @@ Feature: Flight search
       | Istanbul  | Ankara    | 2026-01-01    | 2026-01-10 |    600         |    1080       |
       #| Ankara    | Istanbul |
 
+  #Case 3
   Scenario Outline:Time filter and Price Sorting for Turkish Airlines and Select flight
     Given user is on the home page
     When user accepts cookies
@@ -65,7 +66,7 @@ Feature: Flight search
       | Istanbul  | Ankara    | 2026-01-01    | 2026-01-10 |    600         |    1080       |
       #| Ankara    | Istanbul |
 
-
+  #Case 4
   Scenario Outline:Analysis and Categorization
     Given user is on the home page
     When user accepts cookies
