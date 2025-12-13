@@ -23,6 +23,18 @@ public class WaitHelper {
         this.maxWait = ConfigManager.getInt("explicit.wait");
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(maxWait));
     }
+    public WebElement waitForVisibleInsideShadow(WebElement shadowHost, String cssSelector, String keyName) {
+        WebElement element = null;
+        try {
+            element = new WebDriverWait(driver, Duration.ofSeconds(maxWait))
+                    .until(driver -> shadowHost.getShadowRoot().findElement(By.cssSelector(cssSelector)));
+            log.info("✔ '{}' Shadow DOM içindeki element görünür durumda.", keyName);
+        } catch (TimeoutException e) {
+            log.error("❌ '{}' Shadow DOM içindeki element {} saniye içinde görünür olmadı!", keyName, maxWait);
+            throw e;
+        }
+        return element;
+    }
 
     public WebElement waitForVisible(By locator, String keyName) {
         log.info("➡ '{}' elementinin görünür olması bekleniyor...", keyName);

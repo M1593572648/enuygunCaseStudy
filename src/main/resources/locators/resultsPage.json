@@ -1,10 +1,18 @@
 {
-  "resultsContainer": {
+  "departureReturnTimeFilterHeader": {
     "type": "css",
-    "value": ".flight-list-wrapper"
+    "value": "div.ctx-filter-departure-return-time.card-header"
   },
-  "flightCard": {
-    "type": "css",
-    "value": ".flight-list-item"
+  "departureTimeMinHandle": {
+    "type": "xpath",
+    "value": "//div[@class='rc-slider']//div[@role='slider'][contains(@class, 'rc-slider-handle-1')]"
+  },
+  "leftSidebarContainer": {
+    "type": "xpath",
+    "value": "//div[@class='col-300 ' and .//div[@id='add-to-favorite-root']]"
+  },
+  "departureTimeMaxHandle": {
+    "type": "xpath",
+    "value": "//div[@class='rc-slider']//div[@role='slider'][contains(@class, 'rc-slider-handle-2')]"
   }
 }

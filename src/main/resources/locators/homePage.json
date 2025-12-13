@@ -12,28 +12,29 @@
     "value": "div[data-testid='search-round-trip-text']"
   },
   "departureDate": {
-    "type": "xpath",
-    "value": "//input[@id='FlightSearchForm_departureDate']"
-  },
-  "returnDate": {
-    "type": "xpath",
-    "value": "//input[@id='FlightSearchForm_returnDate']"
-  },
-  "searchButton": {
     "type": "css",
-    "value": ".sc-bcXHqe.gZxkaz"
+    "value": "input[data-testid='enuygun-homepage-flight-departureDate-datepicker-input']"
   },
-  "preferencesButton": {
-    "type": "id",
-    "value": "onetrust-pc-btn-handler"
+  "dateToSelect": {
+    "type": "xpath",
+    "value": "//button[@title='TITLE_VALUE']"
+  },
+  "returnDateInput": {
+    "type": "css",
+    "value": "input[data-testid='enuygun-homepage-flight-returnDate-datepicker-input']"
   },
   "acceptButton": {
     "type": "id",
     "value": "onetrust-accept-btn-handler"
   },
-  "buttonGroup": {
-    "type": "id",
-    "value": "onetrust-button-group"
+  "searchFormTabGroup": {
+    "type": "xpath",
+    "value": "//div[@data-testid='endesign-search-form-tab']"
+  },
+  "searchSubmitButton": {
+    "type": "css",
+    "value": "button[data-testid='enuygun-homepage-flight-submitButton']"
   }
+
 
 }

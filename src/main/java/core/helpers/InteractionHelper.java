@@ -81,6 +81,102 @@ public class InteractionHelper {
             return false;
         }
     }
+    /**
+     * Elementin görünür olmasını sağlar ve sayfada scroll eder.
+     * Shadow DOM içindeyse içindeki gerçek elemente scroll yapılır.
+     */
+    public void scrollToElement(WebElement element, String keyName) {
+        try {
+            // Shadow DOM kontrolü
+            if (isElementInsideShadowDom(element)) {
+                log.info("➡ '{}' elementinin Shadow DOM içinde olduğu tespit edildi. Scroll uygulanıyor...", keyName);
+                element = getElementFromShadowDom(element, "*"); // Shadow root içindeki tüm elementleri kapsayan selector
+            } else {
+                log.info("➡ '{}' elementine scroll uygulanıyor...", keyName);
+            }
+
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
+            log.info("✔ '{}' elementine scroll başarılı.", keyName);
+
+        } catch (Exception e) {
+            log.error("❌ '{}' elementine scroll yapılamadı! Hata: {}", keyName, e.getMessage());
+            throw new RuntimeException("scrollToElement failed for: " + keyName, e);
+        }
+    }
+    /**
+     * Range Slider (Min/Max kolları olan kaydırıcı) üzerinde klavye etkileşimi ile
+     * hareket ettirme işlemi yapar.
+     * Bu metod, rc-slider yapısındaki ARROW_LEFT/RIGHT tuşlarını kullanarak
+     * kaydırıcı kolunu belirli bir değere getirir.
+     *
+     * @param minHandleElement Kaydırıcının sol (başlangıç) kolu (rc-slider-handle-1)
+     * @param maxHandleElement Kaydırıcının sağ (bitiş) kolu (rc-slider-handle-2)
+     * @param targetMinValue Hedef başlangıç değeri (dakika cinsinden, örn: 10:00 için 600)
+     * @param targetMaxValue Hedef bitiş değeri (dakika cinsinden, örn: 18:00 için 1080)
+     * @param handleName Loglar için kaydırıcı adı
+     */
+    public void slideRangeSlider(WebElement minHandleElement, WebElement maxHandleElement, int targetMinValue, int targetMaxValue, String handleName) {
+        log.info("➡ '{}' kaydırıcısı, Min: {} (dk) ve Max: {} (dk) değerlerine ayarlanıyor...", handleName, targetMinValue, targetMaxValue);
+
+        try {
+            // 1. Mevcut Değerleri Alma (Başlangıç Değerini Bulma)
+            int currentMinValue = getCurrentSliderValue(minHandleElement);
+            int currentMaxValue = getCurrentSliderValue(maxHandleElement);
+
+            log.info("ℹ️ Mevcut Min Değer: {} dk, Hedef Min Değer: {} dk", currentMinValue, targetMinValue);
+            log.info("ℹ️ Mevcut Max Değer: {} dk, Hedef Max Değer: {} dk", currentMaxValue, targetMaxValue);
+
+            // --- Sol Kolu (Min Handle) Ayarlama ---
+            adjustSliderHandle(minHandleElement, currentMinValue, targetMinValue, "Sol Kol (Min)");
+
+            // --- Sağ Kolu (Max Handle) Ayarlama ---
+            adjustSliderHandle(maxHandleElement, currentMaxValue, targetMaxValue, "Sağ Kol (Max)");
+
+            log.info("✔ '{}' kaydırıcısı başarıyla Min: {} ve Max: {} değerlerine ayarlandı.", handleName, targetMinValue, targetMaxValue);
+
+        } catch (Exception e) {
+            log.error("❌ '{}' kaydırıcısı ayarlanamadı! Hata: {}", handleName, e.getMessage());
+            throw new RuntimeException("slideRangeSlider failed for: " + handleName, e);
+        }
+    }
+
+    /**
+     * Bir kaydırıcı kolunu hedef değere taşır.
+     *
+     * @param handleElement Kaydırıcı kolu (WebElement)
+     * @param currentValue Mevcut değer (dakika)
+     * @param targetValue Hedef değer (dakika)
+     * @param handleLabel Log etiketi
+     */
+    private void adjustSliderHandle(WebElement handleElement, int currentValue, int targetValue, String handleLabel) {
+        int difference = targetValue - currentValue;
+        Keys keyToPress = difference > 0 ? Keys.ARROW_RIGHT : Keys.ARROW_LEFT;
+        int steps = Math.abs(difference);
+
+        if (steps > 0) {
+            log.info("  -> {} {} adım hareket ettiriliyor (Hedef: {})", handleLabel, steps, targetValue);
+
+            // Kolu tıklayarak odağı üzerine getirme
+            handleElement.click();
+
+            for (int i = 0; i < steps; i++) {
+                handleElement.sendKeys(keyToPress);
+            }
+        } else {
+            log.info("  -> {} zaten hedef değere ({}) ayarlı. Hareket ettirilmedi.", handleLabel, targetValue);
+        }
+    }
+
+    /**
+     * Bir kaydırıcı kolunun mevcut değerini (aria-valuenow) okur.
+     */
+    private int getCurrentSliderValue(WebElement handleElement) {
+        String value = handleElement.getAttribute("aria-valuenow");
+        if (value == null || value.isEmpty()) {
+            return 0; // Varsayılan veya okunamıyorsa 0 döndür
+        }
+        return Integer.parseInt(value);
+    }
 
     /**
      * Eğer element Shadow DOM içindeyse, gerçek DOM elementine ulaşır

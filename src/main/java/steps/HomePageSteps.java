@@ -39,24 +39,46 @@ public class HomePageSteps {
     public void user_enters_to(String toCity) {
         homePage.enterToWhere(toCity);
     }
+
+    @And("kullanıcı gidiş tarihi alanına tıklar")
+    @And("user clicks on the departure date field")
+    public void user_click_departure_input(){
+        homePage.clickToDate();
+    }
+    @And("kullanıcı gidiş tarihi {string} seçer")
+    @And("user selects the departure date {string}")
+    public void user_choose_departure_date(String desiredDate){
+        homePage.selectDate(desiredDate);
+    }
+    @And("kullanıcı dönüş tarihi alanina tiklar")
+    @And("user clicks the return date field")
+    public void user_click_return_date_input(){
+        homePage.clickReturnDate();
+    }
+    @And("kullanıcı dönüş tarihi {string} seçer")
+    @And("user selects the return date {string}")
+    public void user_choose_return_date(String desiredDate){
+        homePage.selectDate(desiredDate);
+    }
+    @And("kullanıcı ucuz uçak bileti ara butonuna tıklar")
+    @And("user clicks search cheap flight button")
+    public void user_clicks_search_cheap_flight_button() {
+        homePage.clickSubmitButton();
+    }
+    @And("kullanici gidiş dönüş tarihleri alanına tıklar")
+    @And("user clicks on the departure and return dates field")
+    public void departureReturnTimeFilterHeader() {
+        resultsPage.clickRoundTripTime();
+    }
+    @And("kullanici saat aralığının başlangıcını {int} ve bitişini {int} seçer ")
+    @And("user selects flight time range with start {int} and end {int}")
+    public void setFlightTimeRange(int minValue, int maxValue){
+        resultsPage.setFlightTimeRange(minValue,maxValue);
+    }
+
 /*
-    @And("kullanıcı kalkış tarihini {string} olarak seçer")
-    @And("user selects departure date {string}")
-    public void user_selects_departure_date(String departureDate) {
-        homePage.selectDepartureDate(departureDate);
-    }
 
-    @And("kullanıcı dönüş tarihini {string} olarak seçer")
-    @And("user selects return date {string}")
-    public void user_selects_return_date(String returnDate) {
-        homePage.selectReturnDate(returnDate);
-    }
 
-    @And("kullanıcı uçuş arama butonuna tıklar")
-    @And("user clicks search button")
-    public void user_clicks_search() {
-        homePage.clickSearch();
-    }
 
     @Then("uçuş listesinde tüm kalkış saatleri 10:00 - 18:00 aralığında olmalı")
     @Then("all departure times should be between 10:00 and 18:00")

@@ -66,6 +66,17 @@ public class ClickHelper {
             throw new RuntimeException("doubleClick failed for: " + keyName, e);
         }
     }
+    public void clickByXpath(String xpath, String keyName) {
+        log.info("➡ '{}' elementine XPath üzerinden tıklanıyor: {}", keyName, xpath);
+        try {
+            WebElement element = driver.findElement(By.xpath(xpath));
+            element.click();
+            log.info("✔ '{}' elementi tıklandı.", keyName);
+        } catch (Exception e) {
+            log.error("❌ '{}' elementine tıklanamadı! Hata: {}", keyName, e.getMessage());
+            throw new RuntimeException("clickByXpath failed for: " + keyName, e);
+        }
+    }
 
     public void rightClick(WebElement element, String keyName) {
         log.info("➡ '{}' elementine sağ tıklama yapılıyor...", keyName);

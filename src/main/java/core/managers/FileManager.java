@@ -11,7 +11,22 @@ public class FileManager {
     public FileManager(String fileName) {
         this.jsonNode = JsonUtils.readJson("src/main/resources/locators/" + fileName);
     }
+    /**
+     * JSON'dan alınan locator'u string olarak döndürür
+     * (örneğin XPath ise value direkt alınır)
+     */
+    public String getLocatorString(String key) {
+        try {
+            JsonNode node = jsonNode.get(key);
+            if (node == null) throw new RuntimeException("JSON key bulunamadı: " + key);
 
+            String type = node.get("type").asText();
+            String value = node.get("value").asText();
+            return value; // sadece string döndürüyoruz, By değil
+        } catch (Exception e) {
+            throw new RuntimeException("JSON key okunamadı: " + key, e);
+        }
+    }
     public By getLocator(String key) {
         try {
             JsonNode node = jsonNode.get(key);

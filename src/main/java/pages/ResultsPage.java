@@ -2,7 +2,7 @@ package pages;
 
 import core.BasePage;
 import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
+
 
 public class ResultsPage extends BasePage {
 
@@ -10,29 +10,13 @@ public class ResultsPage extends BasePage {
         super(driver, "resultsPage.json");
     }
 
-    public boolean isResultsDisplayed() {
-        try {
-            return find("resultsContainer").isDisplayed();
-        } catch (Exception e) {
-            return false;
-        }
+    public void clickRoundTripTime(){
+        waitHelper.waitForVisibleLog(find("leftSidebarContainer"),"leftSidebarContainer");
+        interactionHelper.scrollTo(find("departureReturnTimeFilterHeader"),"departureReturnTimeFilterHeader");
+        clickHelper.click(find("departureReturnTimeFilterHeader"),"departureReturnTimeFilterHeader");
     }
 
-    public boolean hasFlights() {
-        return findAll("flightCard").size() > 0;
-    }
-
-    public void verifyResults() {
-
-        boolean containerVisible = isResultsDisplayed();
-        boolean hasFlightItems = hasFlights();
-
-        Assert.assertTrue(containerVisible,
-                "❌ Results container görünmüyor!");
-
-        Assert.assertTrue(hasFlightItems,
-                "❌ Uçuş sonuçları listelenmedi!");
-
-        System.out.println("✔ Uçuş sonuçları başarıyla görüntülendi.");
+    public void setFlightTimeRange(int minValue, int maxValue){
+        interactionHelper.slideRangeSlider(find("departureTimeMinHandle"), find("departureTimeMaxHandle"), minValue, maxValue, "Flight Time Slider");
     }
 }

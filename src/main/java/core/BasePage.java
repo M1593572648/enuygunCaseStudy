@@ -16,7 +16,7 @@ import java.util.List;
 public class BasePage {
 
     protected final WebDriver driver;
-    private final FileManager fileManager;
+    protected final FileManager fileManager;
     private static final Logger log = LoggerFactory.getLogger(BasePage.class);
     // ---- Helpers ----
     public ClickHelper clickHelper;
@@ -24,6 +24,7 @@ public class BasePage {
     public AssertHelper assertHelper;
     public ScreenshotHelper screenshotHelper;
     public WaitHelper waitHelper;
+
 
     public BasePage(WebDriver driver, String jsonFileName) {
         this.driver = driver;
@@ -33,6 +34,7 @@ public class BasePage {
         this.interactionHelper = new InteractionHelper(driver);
         this.assertHelper = new AssertHelper();
         this.screenshotHelper = new ScreenshotHelper(driver);
+
         PageFactory.initElements(driver, this);
     }
 
@@ -49,17 +51,30 @@ public class BasePage {
 
     // ---- JSON → WebElement ----
     public WebElement find(String key) {
-        WebElement element = waitHelper.waitForVisible(getLocator(key), key);
+        WebElement element;
+        By locator = getLocator(key);
 
-        // Shadow DOM kontrolü
-        if (interactionHelper.isElementInsideShadowDom(element)) {
-            log.info("'{}' elementinin Shadow DOM içinde olduğu tespit edildi.", key);
-            // Shadow DOM içindeki elemente eriş, ör: input içinde #child-element
-            element = interactionHelper.getElementFromShadowDom(element, "#child-element");
+        try {
+            // Önce direkt DOM elementini bekle
+            element = waitHelper.waitForVisible(locator, key);
+
+            // Shadow DOM kontrolü
+            if (interactionHelper.isElementInsideShadowDom(element)) {
+                log.info("'{}' elementinin Shadow DOM içinde olduğu tespit edildi.", key);
+                // Shadow root içindeki gerçek elemente eriş
+                element = interactionHelper.getElementFromShadowDom(element, "#child-element");
+                // Shadow DOM içindeki elementin görünür olmasını bekle
+                element = waitHelper.waitForVisibleInsideShadow(element, "#child-element", key);
+            }
+
+        } catch (Exception e) {
+            log.error("❌ '{}' elementi bulunamadı! Hata: {}", key, e.getMessage());
+            throw e;
         }
 
         return element;
     }
+
 
     // ---- JSON → List<WebElement> ----
     public List<WebElement> findAll(String key) {
@@ -70,7 +85,7 @@ public class BasePage {
         for (int i = 0; i < elements.size(); i++) {
             WebElement e = elements.get(i);
             if (interactionHelper.isElementInsideShadowDom(e)) {
-                log.info("'{}' elementinin Shadow DOM içinde olduğu tespit edildi.", key);
+                log.info("'{}' elementinin Shadow DOM içinde olduğu tespit edildi...", key);
                 // Örn: Shadow DOM içindeki elementin selector’ü #child-element
                 elements.set(i, interactionHelper.getElementFromShadowDom(e, "#child-element"));
             }
