@@ -20,6 +20,9 @@ public class ResultsPage extends BasePage {
     public void checkUrl() {
         assertHelper.verifySearchParamsInUrl();
     }
+    public void runPriceAnalysis(){
+        analyticsHelper.runPriceAnalysis();
+    }
     public void clickRoundTripTime() {
         interactionHelper.scrollToElement(find("baggageFilterContainer"), "baggageFilterContainer");
         clickHelper.click(find("departurePriceToggleIcon"), "departurePriceToggleIcon");

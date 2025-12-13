@@ -27,6 +27,7 @@ public class BasePage {
     public ScreenshotHelper screenshotHelper;
     public WaitHelper waitHelper;
     public DataExtractHelper dataExtractHelper;
+    public AnalyticsHelper analyticsHelper;
 
     /**
      * BasePage constructor, çoklu JSON desteği ve tüm helper’ları başlatır.
@@ -44,6 +45,7 @@ public class BasePage {
         this.assertHelper = new AssertHelper(driver);
         this.screenshotHelper = new ScreenshotHelper(driver);
         this.dataExtractHelper = new DataExtractHelper(driver);
+        this.analyticsHelper = new AnalyticsHelper();
 
         // ---- JSON FileManager ----
         if (jsonFiles != null && jsonFiles.length > 0) {
@@ -100,6 +102,7 @@ public class BasePage {
         this.assertHelper = new AssertHelper(newDriver);
         this.screenshotHelper = new ScreenshotHelper(newDriver);
         this.dataExtractHelper = new DataExtractHelper(newDriver);
+        this.analyticsHelper = new AnalyticsHelper();
 
         // Yeni URL’ye git
         newDriver.get(targetUrl);

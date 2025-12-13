@@ -105,4 +105,16 @@ public class HomePageSteps {
     public void isUrlChanged() {
         resultsPage.checkUrl();
     }
+
+
+    @Then("flight list is extracted to CSV")
+    public void flightListIsExtractedToCSV() {
+        resultsPage.extractList();
+
+    }
+
+    @And("CSV data is analyzed and graphs are generated")
+    public void csvDataIsAnalyzedAndGraphsAreGenerated() {
+        resultsPage.runPriceAnalysis();
+    }
 }
