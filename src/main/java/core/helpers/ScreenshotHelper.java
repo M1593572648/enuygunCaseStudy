@@ -15,11 +15,24 @@ public class ScreenshotHelper {
 
     public void takeScreenshot(String name) {
         try {
+            // Screenshot al
             File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-            File dest = new File("screenshots/" + name + ".png");
+
+            // logs klasörünü oluştur (yoksa)
+            File logsDir = new File("logs");
+            if (!logsDir.exists()) {
+                logsDir.mkdirs();
+            }
+
+            // Dosya yolu logs klasörüne
+            File dest = new File(logsDir, name + ".png");
+
+            // Dosyayı kopyala
             FileHandler.copy(src, dest);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 }

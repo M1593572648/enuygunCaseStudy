@@ -53,20 +53,23 @@ public class DriverFactory {
         String localDriverPath = ConfigManager.get("chrome.driver.path");
         File driverFile = new File(localDriverPath);
 
+        ChromeOptions options = new ChromeOptions();
+        // Headless veya window objesi olmayan durumlar için
+        options.addArguments("--window-size=1920,1080");
+        options.addArguments("--disable-gpu");
+
         log.debug("ChromeDriver path (config): {}", localDriverPath);
         log.debug("ChromeDriver exists: {}", driverFile.exists());
 
         if (checkLocal && driverFile.exists()) {
-
             log.info("✔ Local ChromeDriver kullanılacak → {}", localDriverPath);
             System.setProperty("webdriver.chrome.driver", localDriverPath);
-
-            return new ChromeDriver(new ChromeOptions());
+            return new ChromeDriver(options);
         }
 
         log.warn("⚠ Local ChromeDriver bulunamadı → WebDriverManager devrede");
         WebDriverManager.chromedriver().setup();
-        return new ChromeDriver(new ChromeOptions());
+        return new ChromeDriver(options);
     }
 
     // ====================================================================
@@ -77,20 +80,23 @@ public class DriverFactory {
         String localDriverPath = ConfigManager.get("firefox.driver.path");
         File driverFile = new File(localDriverPath);
 
+        FirefoxOptions options = new FirefoxOptions();
+        // Headless veya window objesi olmayan durumlar için
+        options.addArguments("--width=1920");
+        options.addArguments("--height=1080");
+
         log.debug("GeckoDriver path (config): {}", localDriverPath);
         log.debug("GeckoDriver exists: {}", driverFile.exists());
 
         if (checkLocal && driverFile.exists()) {
-
             log.info("✔ Local GeckoDriver kullanılacak → {}", localDriverPath);
             System.setProperty("webdriver.gecko.driver", localDriverPath);
-
-            return new FirefoxDriver(new FirefoxOptions());
+            return new FirefoxDriver(options);
         }
 
         log.warn("⚠ Local GeckoDriver bulunamadı → WebDriverManager devrede");
         WebDriverManager.firefoxdriver().setup();
-        return new FirefoxDriver(new FirefoxOptions());
+        return new FirefoxDriver(options);
     }
 
     // ====================================================================

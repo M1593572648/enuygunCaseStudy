@@ -5,7 +5,7 @@
   },
   "bodyContentContainer": {
     "type": "css",
-    "value": ".body-content"
+    "value": "div.body-content"
   },
   "searchRootContainer": {
     "type": "xpath",
@@ -13,7 +13,47 @@
   },
   "departureReturnTimeFilterHeader": {
     "type": "css",
-    "value": "div.ctx-filter-departure-return-time.card-header"
+    "value": "ctx-filter-departure-return-time card-header"
+  },
+  "departurePriceToggleIcon": {
+    "type": "css",
+    "value": ".ctx-filter-departure-return-time .ei-timer"
+  },
+  "airlineIcon": {
+    "type": "css",
+    "value": ".ctx-filter-airline.ei-expand-more"
+  },
+  "thyAirlineName": {
+    "type": "css",
+    "value": "label[for='TKairlines'] .custom-control-description.search__filter_airlines-TK > span:nth-child(1)"
+  },
+  "selectFlightButton": {
+    "type": "css",
+    "value": "div.flight-summary-select button.action-select-btn"
+  },
+  "selectAndProceedButton": {
+    "type": "css",
+    "value": "div.btn-wrapper > span"
+  },
+  "returnListActionSelectButton": {
+    "type": "css",
+    "value": ".flight-list-return .flight-summary-price .action-select-btn:nth-of-type(1)"
+  },
+  "superEkoPackageItem": {
+    "type": "css",
+    "value": "div[data-testid='returnProviderPackageItemSüper Eko']"
+  },
+  "ecoFlyPackageItem": {
+    "type": "css",
+    "value": "div[data-testid='returnProviderPackageItemEcoFly']"
+  },
+  "baggageFilterContainer": {
+    "type": "css",
+    "value": ".filter-card.baggage.card"
+  },
+  "acceptButton": {
+    "type": "id",
+    "value": "onetrust-accept-btn-handler"
   },
   "departureTimeMinHandle": {
     "type": "xpath",
@@ -26,5 +66,57 @@
   "departureTimeMaxHandle": {
     "type": "xpath",
     "value": "//div[@class='rc-slider']//div[@role='slider'][contains(@class, 'rc-slider-handle-2')]"
+  },
+
+  "timeSliderMinHandle": {
+    "type": "css",
+    "value": ".rc-slider-handle-1[role='slider']"
+  },
+  "timeSliderMaxHandle": {
+    "type": "css",
+    "value": ".rc-slider-handle-2[role='slider']"
+  },
+  "containerDiv": {
+    "type": "css",
+    "value": "div.search-result.search-result-departure-only"
+  },
+  "flightItems": {
+    "type": "css",
+    "value": "div.flight-list-body > div > div.flight-item"
+  },
+  "airlineName": {
+    "type": "css",
+    "value": "div.summary-airline div.summary-marketing-airlines"
+  },
+  "airports": {
+    "type": "css",
+    "value": "div.summary-airports span.itemAirport"
+  },
+  "departureTime": {
+    "type": "css",
+    "value": "div.flight-departure-time"
+  },
+  "arrivalTime": {
+    "type": "css",
+    "value": "div.flight-arrival-time"
+  },
+  "duration": {
+    "type": "css",
+    "value": "span[data-testid='departureFlightTime']"
+  },
+  "price": {
+    "type": "css",
+    "value": "div.summary-average-price"
+  },
+  "baggage": {
+    "type": "css",
+    "value": "span.summary-luggage-unit"
+  },
+  "flightId": {
+    "type": "css",
+    "value": "div.flight-item"
   }
+
+
+
 }

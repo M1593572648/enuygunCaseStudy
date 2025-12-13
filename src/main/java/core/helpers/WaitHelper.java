@@ -243,6 +243,36 @@ public class WaitHelper {
         throw new TimeoutException("'" + keyName + "' elementi DOM'da veya iframe içinde görünür hale gelmedi.");
     }
 
+    /**
+     * Sayfanın URL'sinin değişip değişmediğini kontrol eder.
+     *
+     * @param initialUrl Kontrol edilecek başlangıç URL'si
+     * @param timeoutS Maksimum bekleme süresi (saniye)
+     * @param pollIntervalMs Kontrol aralığı (ms)
+     * @return true: URL değişti, false: timeout içinde değişmedi
+     */
+    public boolean waitForUrlChange(String initialUrl, int timeoutS, int pollIntervalMs) {
+        log.info("➡ Sayfanın URL'si '{}' ile başlayıp değişip değişmediği kontrol ediliyor...", initialUrl);
+        long endTime = System.currentTimeMillis() + timeoutS * 1000L;
+
+        while (System.currentTimeMillis() < endTime) {
+            String currentUrl = driver.getCurrentUrl();
+            if (!currentUrl.equals(initialUrl)) {
+                log.info("✔ Sayfanın URL'si değişti: '{}'", currentUrl);
+                return true;
+            }
+            try {
+                Thread.sleep(pollIntervalMs);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.warn("⚠ URL değişim kontrolü sırasında bekleme kesildi.");
+                return false;
+            }
+        }
+
+        log.warn("⚠ Sayfanın URL'si '{}' süresi boyunca değişmedi.", initialUrl);
+        return false;
+    }
 
     public WebElement findWithIframeAndShadowJs(By locator, String keyName, int pollIntervalMs) {
         int initialTimeoutS = 5;
@@ -326,7 +356,30 @@ public class WaitHelper {
         throw new TimeoutException("'" + keyName + "' elementi DOM, iframe veya Shadow DOM içinde görünür hale gelmedi.");
     }
 
+    /**
+     * Sayfanın tamamen yüklenmesini bekler (document.readyState = complete)
+     * @param timeoutS Maksimum bekleme süresi (saniye)
+     */
+    public void waitForPageLoad(int timeoutS) {
+        long endTime = System.currentTimeMillis() + timeoutS * 1000L;
 
+        while (System.currentTimeMillis() < endTime) {
+            try {
+                String readyState = (String) ((JavascriptExecutor) driver)
+                        .executeScript("return document.readyState");
+                if ("complete".equals(readyState)) {
+                    log.info("✔ Sayfa tamamen yüklendi.");
+                    return;
+                }
+                Thread.sleep(500); // yarım saniye bekle ve tekrar kontrol et
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Page load wait interrupted", e);
+            }
+        }
+
+        throw new RuntimeException("❌ Sayfa yüklenmedi (timeout: " + timeoutS + "s)");
+    }
     /**
      * Basit 1s bekleme fonksiyonu
      */

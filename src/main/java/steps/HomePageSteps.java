@@ -76,24 +76,33 @@ public class HomePageSteps {
         resultsPage.setFlightTimeRange(minValue,maxValue);
     }
 
-/*
-    @Then("uçuş listesinde tüm kalkış saatleri 10:00 - 18:00 aralığında olmalı")
-    @Then("all departure times should be between 10:00 and 18:00")
-    public void verify_departure_times() {
-        resultsPage.verifyDepartureTimesBetween("10:00", "18:00");
+    @And("user wait reloading page")
+    public void userWaitReloadingPage() {
+        resultsPage.waitReloadPage();
+    }
+    @And("user choose only turkish airlines")
+    public void userChooseOnlyTurkishAirlines() {
+        resultsPage.userChooseTurkishAirlines();
     }
 
-    @And("uçuş listesi doğru şekilde görüntülenmeli")
-    @And("flight list should be displayed correctly")
-    public void verify_flight_list_display() {
-        resultsPage.verifyFlightListDisplayed();
+    @And("user select first button in the div")
+    public void selectFirstBtn(){
+        resultsPage.selectFlightButton();
+    }
+    @Then("is ascending price and selected thy")
+    public void ascendingPrice() {
+        resultsPage.isAscendingPriceAndThy();
+    }
+    @Then("all list displayed and verify the departure time between 10.00 and 18.00")
+    public void isDisplayed(){
+        resultsPage.extractList();
+        resultsPage.verifyDepartureTimesBetween();
+        resultsPage.verifyRouteIstanbulToAnkara();
     }
 
-    @And("arama sonuçları seçilen güzergah ile eşleşmeli")
-    @And("search results should match the selected route")
-    public void verify_search_results_route() {
-        resultsPage.verifySearchResultsRoute();
-    }
 
- */
+    @Then("is url changed")
+    public void isUrlChanged() {
+        resultsPage.checkUrl();
+    }
 }
