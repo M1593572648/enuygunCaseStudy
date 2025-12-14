@@ -15,5 +15,5 @@ import io.cucumber.testng.CucumberOptions;
         monochrome = true,
         tags = "@Regression"
 )
-public class TestRunner extends AbstractTestNGCucumberTests {
+public class ApiTestRunner extends AbstractTestNGCucumberTests {
 }
