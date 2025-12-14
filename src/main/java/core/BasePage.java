@@ -71,7 +71,7 @@ public class BasePage {
         try {
             log.info("⚠ URL değişti. Mevcut tarayıcı kapanacak ve yeni URL ile devam edilecek: {}", targetUrl);
             if (driver != null) {
-                driver.quit();
+                DriverFactory.quitDriver();
             }
         } catch (Exception e) {
             log.warn("⚠ Mevcut driver kapatılamadı: {}", e.getMessage());
@@ -79,9 +79,9 @@ public class BasePage {
 
         // Yeni driver oluştur
         WebDriver newDriver = driverSupplier.get();
-        DriverFactory.setDriver(newDriver); // ThreadLocal’u güncelle
         // BasePage içindeki driver ve helper'ları güncelle
         this.driver = newDriver;
+        DriverFactory.setDriver(newDriver); // ThreadLocal’u güncelle
         this.clickHelper = new ClickHelper(newDriver);
         this.interactionHelper = new InteractionHelper(newDriver);
         this.waitHelper = new WaitHelper(newDriver);
@@ -93,6 +93,7 @@ public class BasePage {
         // Yeni URL’ye git
         newDriver.get(targetUrl);
         log.info("✔ Yeni tarayıcı başlatıldı ve '{}' URL'sine gidildi.", targetUrl);
+        driver.manage().window().maximize();
     }
 
     /**
@@ -107,6 +108,11 @@ public class BasePage {
         waitHelper.waitForPageLoad(30);
     }
 
+    public void forceQuitDriver(){
+        if (driver != null) {
+            DriverFactory.quitDriver();
+        }
+    }
     // ---- JSON → WebElement ----
     public WebElement find(String key) {
         WebElement element;

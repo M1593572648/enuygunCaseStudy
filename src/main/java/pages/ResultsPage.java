@@ -11,7 +11,9 @@ public class ResultsPage extends BasePage {
         super(driver, "resultsPage.json","homePage.json");
 
     }
-
+    public void forceQuitDrivers(){
+        forceQuitDriver();
+    }
     public void waitReloadPage() {
         String targetUrl = "https://www.enuygun.com/ucak-bileti/arama/istanbul-ankara-esenboga-havalimani-ista-esb/?gidis=01.01.2026&donus=10.01.2026&yetiskin=1&sinif=ekonomi&currency=TRY&save=1&ref=homepage&geotrip=domestic&trip=domestic";
         super.waitReloadPage(targetUrl, () -> new ChromeDriver());

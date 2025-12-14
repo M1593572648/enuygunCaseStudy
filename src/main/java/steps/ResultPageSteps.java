@@ -34,18 +34,22 @@ public class ResultPageSteps {
     @Then("is ascending price and selected thy")
     public void ascendingPrice() {
         resultsPage.isAscendingPriceAndThy();
+        resultsPage.forceQuitDrivers();
     }
     @Then("all list displayed and verify the departure time between 10.00 and 18.00")
     public void isDisplayed(){
         resultsPage.extractList();
         resultsPage.verifyDepartureTimesBetween();
         resultsPage.verifyRouteIstanbulToAnkara();
+        resultsPage.forceQuitDrivers();
+
     }
 
 
     @Then("is url changed")
     public void isUrlChanged() {
         resultsPage.checkUrl();
+        resultsPage.forceQuitDrivers();
     }
 
 
@@ -58,5 +62,6 @@ public class ResultPageSteps {
     @And("CSV data is analyzed and graphs are generated")
     public void csvDataIsAnalyzedAndGraphsAreGenerated() {
         resultsPage.runPriceAnalysis();
+        resultsPage.forceQuitDrivers();
     }
 }

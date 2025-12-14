@@ -2,7 +2,7 @@
 Feature: Automated Data Analysis of Flight Search and Filtering Results
 
   #Case 1
-  @Smoke
+  @Case1
   Scenario Outline: Basic Flight Search and Time Filter
     Given user is on the home page
     When user accepts cookies
@@ -24,7 +24,7 @@ Feature: Automated Data Analysis of Flight Search and Filtering Results
       #| Ankara    | Istanbul |
 
   #Case 2
-  @Smoke
+  @Case2
   Scenario Outline:Price Sorting for Turkish Airlines
     Given user is on the home page
     When user accepts cookies
@@ -47,7 +47,7 @@ Feature: Automated Data Analysis of Flight Search and Filtering Results
       #| Ankara    | Istanbul |
 
   #Case 3 Critical Path Testing
-  @Smoke
+  @Case3
   Scenario Outline:Time filter and Price Sorting for Turkish Airlines and Select flight
     Given user is on the home page
     When user accepts cookies
@@ -71,7 +71,7 @@ Feature: Automated Data Analysis of Flight Search and Filtering Results
       #| Ankara    | Istanbul |
 
   #Case 4
-  @Smoke
+  @Case4
   Scenario Outline:Analysis and Categorization
     Given user is on the home page
     When user accepts cookies
