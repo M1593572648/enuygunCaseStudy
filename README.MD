@@ -1,5 +1,6 @@
 # 🧪 enuygunCaseStudy
 
+- **Project Overview**
 
 This repository contains **UI automation tests** for the website **www.enuygun.com**, along with **Python scripts used for test data analysis and result evaluation**.
 
@@ -13,6 +14,13 @@ The test architecture is built using:
 
 The project follows a **Cucumber + TestNG + Page Object Model (POM) architecture**, ensuring a **clean, modular, and maintainable test automation structure**.
 
+# 📸 Logging & Screenshot Support
+
+- **The framework also includes a step-level logging and screenshot mechanism:**
+- **Automatic screenshots are captured at critical steps and on failures**
+- **Detailed logs are generated during step execution**
+- **Screenshots and logs are attached to Allure reports, enabling easier debugging and root cause analysis**
+- **This structure improves test traceability, observability, and failure analysis**
 ---
 ### Included Libraries
 - **pandas** – Data manipulation and analysis
