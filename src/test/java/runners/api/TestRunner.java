@@ -4,17 +4,16 @@ import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
 
 @CucumberOptions(
-        features = "src/features/api/petstore/pet_crud.feature",
-        glue = "api.steps",
+        features = "src/features/api/petstore",
+        glue = {"api"}, // step definition’larının bulunduğu package
         plugin = {
                 "pretty",
                 "html:target/cucumber-reports.html",
-                "json:target/cucumber.json"
+                "json:target/cucumber.json",
+                "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
         },
         monochrome = true,
-        // Feature dosyasındaki en üst seviye etiketleri kullanın.
-        // Bu, bu feature dosyasındaki tüm senaryoları bulacaktır.
-        tags = "@crud"
+        tags = "@Regression"
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
 }

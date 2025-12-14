@@ -23,6 +23,9 @@ public class WaitHelper {
         this.maxWait = ConfigManager.getInt("explicit.wait");
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(maxWait));
     }
+    /**
+     * Element görünür mü değilse shadow element içerisine bak ve görünür olasıya kadar bekle
+     * */
     public WebElement waitForVisibleInsideShadow(WebElement shadowHost, String cssSelector, String keyName) {
         WebElement element = null;
         try {
@@ -35,7 +38,9 @@ public class WaitHelper {
         }
         return element;
     }
-
+    /**
+     * Elementi görünür olasıya kadar bekle
+     * */
     public WebElement waitForVisible(By locator, String keyName) {
         log.info("➡ '{}' elementinin görünür olması bekleniyor...", keyName);
         try {
@@ -47,6 +52,97 @@ public class WaitHelper {
             throw e;
         }
     }
+    /**
+     * Basit 1s bekleme fonksiyonu
+     */
+    public void waitFor1Sec() {
+        log.info("⏱ 1 saniye bekleniyor...");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            log.warn("⚠ Bekleme sırasında hata oluştu: {}", e.getMessage());
+            Thread.currentThread().interrupt();
+        }
+        log.info("✔ 1 saniye bekleme tamamlandı.");
+    }
+    /**
+     * Sayfanın URL'sinin değişip değişmediğini kontrol eder.
+     *
+     * @param initialUrl Kontrol edilecek başlangıç URL'si
+     * @param timeoutS Maksimum bekleme süresi (saniye)
+     * @param pollIntervalMs Kontrol aralığı (ms)
+     * @return true: URL değişti, false: timeout içinde değişmedi
+     */
+    public boolean waitForUrlChange(String initialUrl, int timeoutS, int pollIntervalMs) {
+        log.info("➡ Sayfanın URL'si '{}' ile başlayıp değişip değişmediği kontrol ediliyor...", initialUrl);
+        long endTime = System.currentTimeMillis() + timeoutS * 1000L;
+
+        while (System.currentTimeMillis() < endTime) {
+            String currentUrl = driver.getCurrentUrl();
+            if (!currentUrl.equals(initialUrl)) {
+                log.info("✔ Sayfanın URL'si değişti: '{}'", currentUrl);
+                return true;
+            }
+            try {
+                Thread.sleep(pollIntervalMs);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.warn("⚠ URL değişim kontrolü sırasında bekleme kesildi.");
+                return false;
+            }
+        }
+
+        log.warn("⚠ Sayfanın URL'si '{}' süresi boyunca değişmedi.", initialUrl);
+        return false;
+    }
+    /**
+     * Sayfanın tamamen yüklenmesini bekler (document.readyState = complete)
+     * @param timeoutS Maksimum bekleme süresi (saniye)
+     */
+    public void waitForPageLoad(int timeoutS) {
+        long endTime = System.currentTimeMillis() + timeoutS * 1000L;
+
+        while (System.currentTimeMillis() < endTime) {
+            try {
+                String readyState = (String) ((JavascriptExecutor) driver)
+                        .executeScript("return document.readyState");
+                if ("complete".equals(readyState)) {
+                    log.info("✔ Sayfa tamamen yüklendi.");
+                    return;
+                }
+                Thread.sleep(500); // yarım saniye bekle ve tekrar kontrol et
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Page load wait interrupted", e);
+            }
+        }
+
+        throw new RuntimeException("❌ Sayfa yüklenmedi (timeout: " + timeoutS + "s)");
+    }
+    /**
+     * Belirtilen milisaniye kadar bekleme fonksiyonu
+     * @param milisaniye Beklenecek süre (milisaniye cinsinden).
+     */
+    public void waitFor(long milisaniye) {
+        // Loglama: milisaniye değişkenini kullanarak ne kadar bekleneceğini belirtir
+        log.info("⏱ {}ms bekleniyor...", milisaniye);
+        try {
+            // Parametreden gelen milisaniye değerini kullanır
+            Thread.sleep(milisaniye);
+        } catch (InterruptedException e) {
+            // Hata durumunda uyarı verir
+            log.warn("⚠ Bekleme sırasında hata oluştu: {}", e.getMessage());
+            // Mevcut thread'in kesilme durumunu tekrar ayarlar
+            Thread.currentThread().interrupt();
+        }
+        // Loglama: Beklemenin tamamlandığını belirtir
+        log.info("✔ {}ms bekleme tamamlandı.", milisaniye);
+    }
+
+
+    /**
+     * Aşağıdaki kodlar belki kullanılır diye bırakıldı
+     */
     public void waitForVisibleLog(WebElement element, String keyName) {
         log.info("➡ '{}' elementinin görünür olması bekleniyor...", keyName);
         try {
@@ -57,8 +153,6 @@ public class WaitHelper {
             throw e;
         }
     }
-
-
     public WebElement waitForClickable(By locator, String keyName) {
         log.info("➡ '{}' elementinin tıklanabilir olması bekleniyor...", keyName);
         try {
@@ -70,7 +164,6 @@ public class WaitHelper {
             throw e;
         }
     }
-
     public List<WebElement> waitForAllVisible(By locator, String keyName) {
         log.info("➡ '{}' elementlerinin görünür olması bekleniyor...", keyName);
         try {
@@ -82,7 +175,6 @@ public class WaitHelper {
             throw e;
         }
     }
-
     public List<WebElement> waitForAllPresent(By locator, String keyName) {
         log.info("➡ '{}' elementlerinin DOM'da bulunması bekleniyor...", keyName);
         try {
@@ -94,7 +186,6 @@ public class WaitHelper {
             throw e;
         }
     }
-
     public void waitForInvisible(By locator, String keyName) {
         log.info("➡ '{}' elementinin görünmez olması bekleniyor...", keyName);
         try {
@@ -105,7 +196,6 @@ public class WaitHelper {
             throw e;
         }
     }
-
     /**
      * DOM'da var mı diye kontrol ederek, görünür olmasını bekler.
      * 5 saniye boyunca retry yapar. Bulamazsa iframe kontrolü yapar.
@@ -156,8 +246,6 @@ public class WaitHelper {
 
         throw new TimeoutException("'" + keyName + "' elementi DOM'da veya iframe içinde görünür hale gelmedi.");
     }
-
-
     public WebElement waitForPresence(By locator, String keyName) {
         log.info("➡ '{}' elementinin DOM'da varlığı bekleniyor...", keyName);
         try {
@@ -169,7 +257,6 @@ public class WaitHelper {
             throw e;
         }
     }
-
     public boolean waitUntilTextExists(By locator, String text, String keyName) {
         log.info("➡ '{}' elementinde '{}' metninin görünmesi bekleniyor...", keyName, text);
         try {
@@ -181,8 +268,6 @@ public class WaitHelper {
             throw e;
         }
     }
-
-
     /**
      * DOM'da var mı diye kontrol ederek, görünür olmasını bekler.
      * Element DOM'a eklenene kadar veya iframe içinde JS ile görünür yapılarak retry yapılır.
@@ -242,38 +327,6 @@ public class WaitHelper {
 
         throw new TimeoutException("'" + keyName + "' elementi DOM'da veya iframe içinde görünür hale gelmedi.");
     }
-
-    /**
-     * Sayfanın URL'sinin değişip değişmediğini kontrol eder.
-     *
-     * @param initialUrl Kontrol edilecek başlangıç URL'si
-     * @param timeoutS Maksimum bekleme süresi (saniye)
-     * @param pollIntervalMs Kontrol aralığı (ms)
-     * @return true: URL değişti, false: timeout içinde değişmedi
-     */
-    public boolean waitForUrlChange(String initialUrl, int timeoutS, int pollIntervalMs) {
-        log.info("➡ Sayfanın URL'si '{}' ile başlayıp değişip değişmediği kontrol ediliyor...", initialUrl);
-        long endTime = System.currentTimeMillis() + timeoutS * 1000L;
-
-        while (System.currentTimeMillis() < endTime) {
-            String currentUrl = driver.getCurrentUrl();
-            if (!currentUrl.equals(initialUrl)) {
-                log.info("✔ Sayfanın URL'si değişti: '{}'", currentUrl);
-                return true;
-            }
-            try {
-                Thread.sleep(pollIntervalMs);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                log.warn("⚠ URL değişim kontrolü sırasında bekleme kesildi.");
-                return false;
-            }
-        }
-
-        log.warn("⚠ Sayfanın URL'si '{}' süresi boyunca değişmedi.", initialUrl);
-        return false;
-    }
-
     public WebElement findWithIframeAndShadowJs(By locator, String keyName, int pollIntervalMs) {
         int initialTimeoutS = 5;
         long endTime = System.currentTimeMillis() + initialTimeoutS * 1000L;
@@ -355,44 +408,6 @@ public class WaitHelper {
 
         throw new TimeoutException("'" + keyName + "' elementi DOM, iframe veya Shadow DOM içinde görünür hale gelmedi.");
     }
-
-    /**
-     * Sayfanın tamamen yüklenmesini bekler (document.readyState = complete)
-     * @param timeoutS Maksimum bekleme süresi (saniye)
-     */
-    public void waitForPageLoad(int timeoutS) {
-        long endTime = System.currentTimeMillis() + timeoutS * 1000L;
-
-        while (System.currentTimeMillis() < endTime) {
-            try {
-                String readyState = (String) ((JavascriptExecutor) driver)
-                        .executeScript("return document.readyState");
-                if ("complete".equals(readyState)) {
-                    log.info("✔ Sayfa tamamen yüklendi.");
-                    return;
-                }
-                Thread.sleep(500); // yarım saniye bekle ve tekrar kontrol et
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new RuntimeException("Page load wait interrupted", e);
-            }
-        }
-
-        throw new RuntimeException("❌ Sayfa yüklenmedi (timeout: " + timeoutS + "s)");
-    }
-    /**
-     * Basit 1s bekleme fonksiyonu
-     */
-    public void waitFor1Sec() {
-        log.info("⏱ 1 saniye bekleniyor...");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            log.warn("⚠ Bekleme sırasında hata oluştu: {}", e.getMessage());
-            Thread.currentThread().interrupt();
-        }
-        log.info("✔ 1 saniye bekleme tamamlandı.");
-    }
     public boolean isPresent(By locator, String keyName) {
         try {
             driver.findElement(locator);
@@ -403,26 +418,6 @@ public class WaitHelper {
             return false;
         }
     }
-    /**
-     * Belirtilen milisaniye kadar bekleme fonksiyonu
-     * @param milisaniye Beklenecek süre (milisaniye cinsinden).
-     */
-    public void waitFor(long milisaniye) {
-        // Loglama: milisaniye değişkenini kullanarak ne kadar bekleneceğini belirtir
-        log.info("⏱ {}ms bekleniyor...", milisaniye);
-        try {
-            // Parametreden gelen milisaniye değerini kullanır
-            Thread.sleep(milisaniye);
-        } catch (InterruptedException e) {
-            // Hata durumunda uyarı verir
-            log.warn("⚠ Bekleme sırasında hata oluştu: {}", e.getMessage());
-            // Mevcut thread'in kesilme durumunu tekrar ayarlar
-            Thread.currentThread().interrupt();
-        }
-        // Loglama: Beklemenin tamamlandığını belirtir
-        log.info("✔ {}ms bekleme tamamlandı.", milisaniye);
-    }
-
     public boolean waitUntilUrlContains(String text) {
         log.info("➡ URL'nin '{}' içermesi bekleniyor...", text);
         try {

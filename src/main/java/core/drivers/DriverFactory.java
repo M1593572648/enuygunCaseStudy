@@ -103,10 +103,19 @@ public class DriverFactory {
     // QUIT
     // ====================================================================
     public static void quitDriver() {
-        if (driver.get() != null) {
-            log.info("Driver kapatılıyor...");
-            driver.get().quit();
-            driver.remove();
+        WebDriver localDriver = driver.get();
+        if (localDriver != null) {
+            try {
+                log.info("Driver kapatılıyor...");
+                localDriver.quit();
+            } catch (Exception e) {
+                log.error("Driver quit sırasında hata: ", e);
+            } finally {
+                driver.remove();
+            }
+        } else {
+            log.warn("Driver zaten null, quit edilemiyor");
         }
     }
+
 }

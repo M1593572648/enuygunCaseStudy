@@ -73,13 +73,6 @@ public class ClickHelper {
         }
     }
 
-    public void highlightAndClick(WebElement element) {
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].style.border='3px solid red'", element);
-        sleep(200);
-        element.click();
-    }
-
     public void doubleClick(WebElement element, String keyName) {
         log.info("➡ '{}' elementine çift tıklama yapılıyor...", keyName);
         try {

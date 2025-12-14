@@ -1,6 +1,8 @@
-Feature: Flight search UI Automation
+@Regression
+Feature: Automated Data Analysis of Flight Search and Filtering Results
 
   #Case 1
+  @Smoke
   Scenario Outline: Basic Flight Search and Time Filter
     Given user is on the home page
     When user accepts cookies
@@ -22,6 +24,7 @@ Feature: Flight search UI Automation
       #| Ankara    | Istanbul |
 
   #Case 2
+  @Smoke
   Scenario Outline:Price Sorting for Turkish Airlines
     Given user is on the home page
     When user accepts cookies
@@ -44,6 +47,7 @@ Feature: Flight search UI Automation
       #| Ankara    | Istanbul |
 
   #Case 3
+  @Smoke
   Scenario Outline:Time filter and Price Sorting for Turkish Airlines and Select flight
     Given user is on the home page
     When user accepts cookies
@@ -67,6 +71,7 @@ Feature: Flight search UI Automation
       #| Ankara    | Istanbul |
 
   #Case 4
+  @Smoke
   Scenario Outline:Analysis and Categorization
     Given user is on the home page
     When user accepts cookies

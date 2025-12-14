@@ -11,10 +11,6 @@ import org.openqa.selenium.support.PageFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
-import static org.testng.Assert.assertNotEquals;
-
 public class BasePage {
 
     protected WebDriver driver;
@@ -68,17 +64,6 @@ public class BasePage {
         return fileManager.getLocator(key);
     }
 
-    public void isChangedUrl(String oldUrl) {
-        String currentUrl = driver.getCurrentUrl();
-
-        assertNotEquals(
-                currentUrl,
-                oldUrl,
-                "❌ URL değişmedi"
-        );
-
-        log.info("✅ URL değişti: {}", currentUrl);
-    }
 
     // --- URL Yönlendirmesinden sonra restart driver ----
     public void restartDriverWithNewUrl(String targetUrl, java.util.function.Supplier<WebDriver> driverSupplier) {

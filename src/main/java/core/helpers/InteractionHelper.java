@@ -18,7 +18,8 @@ public class InteractionHelper {
         this.actions = new Actions(driver);
         this.log = LoggerManager.getLogger(InteractionHelper.class);
     }
-
+    /**
+     * Elemente Yazma ve Silme işlemi*/
     public void clearAndType(WebElement element, String value, String keyName) {
         log.info("➡ '{}' elementine '{}' değeri yazılacak...", keyName, value);
         try {
@@ -30,6 +31,9 @@ public class InteractionHelper {
             throw new RuntimeException("clearAndType failed for: " + keyName, e);
         }
     }
+    /**
+     * Elemente Yazma işlemi
+     * */
     public void type(WebElement element, String value, String keyName) {
         log.info("➡ '{}' elementine '{}' değeri yazılacak...", keyName, value);
         try {
@@ -53,91 +57,9 @@ public class InteractionHelper {
             throw new RuntimeException("pressEnterKey failed for: " + keyName, e);
         }
     }
-    public void scrollTo(WebElement element, String keyName) {
-        log.info("➡ '{}' elementine scroll ediliyor...", keyName);
-        try {
-            actions.moveToElement(element).perform();
-            log.info("✔ '{}' elementine scroll başarılı.", keyName);
-        } catch (Exception e) {
-            log.error("❌ '{}' elementine scroll yapılamadı! Hata: {}", keyName, e.getMessage());
-            throw new RuntimeException("scrollTo failed for: " + keyName, e);
-        }
-    }
     /**
-     * Iframe ve Shadow DOM içindeki bir elementi görünür hale getirir.
-     * StaleElementReferenceException veya DOM'da bulunamama durumunda shadow DOM içinde arama yapılır.
-     * Her adım loglanır.
-     *
-     * @param locator Aranacak elementin By locator'ı
-     * @param keyName Log için element adı
-     * @param timeoutS Maksimum bekleme süresi (saniye)
-     * @param pollIntervalMs Deneme aralığı (ms)
-     * @return Görünür hale getirilmiş WebElement
-     */
-    public WebElement makeVisibleInsideIframeAndShadow(By locator, String keyName, int timeoutS, int pollIntervalMs) {
-        long endTime = System.currentTimeMillis() + timeoutS * 1000L;
-        int attempt = 0;
-
-        String cssSelector = locatorToCss(locator); // JS querySelector için string
-
-        while (System.currentTimeMillis() < endTime) {
-            attempt++;
-            try {
-                log.info("🔄 [{}] Deneme {}: '{}' elementi DOM'da aranıyor...", attempt, attempt, keyName);
-
-                // 1️⃣ Normal DOM + görünürlük kontrolü
-                List<WebElement> elements = driver.findElements(locator);
-                if (!elements.isEmpty()) {
-                    WebElement element = elements.get(0);
-                    element = fetchFromShadowWithLog(element, keyName, attempt);
-                    makeElementVisibleJsWithLog(element, keyName, attempt);
-                    if (element.isDisplayed()) {
-                        log.info("✔ [{}] Deneme {}: '{}' elementi DOM'da görünür hale getirildi.", attempt, attempt, keyName);
-                        return element;
-                    }
-                }
-
-                // 2️⃣ Iframe kontrolü
-                List<WebElement> iframes = driver.findElements(By.tagName("iframe"));
-                for (WebElement frame : iframes) {
-                    try {
-                        driver.switchTo().frame(frame);
-                        WebElement found = findElementInDomOrShadow(locator, keyName, attempt);
-                        if (found != null) {
-                            makeElementVisibleJsWithLog(found, keyName, attempt);
-                            if (found.isDisplayed()) {
-                                log.info("✔ [{}] Deneme {}: '{}' elementi iframe içinde görünür hale getirildi.", attempt, attempt, keyName);
-                                return found;
-                            }
-                        }
-                    } finally {
-                        driver.switchTo().defaultContent();
-                    }
-                }
-
-                // 3️⃣ Shadow DOM global arama
-                WebElement shadowFound = findElementInShadowGlobally(locator, keyName, attempt);
-                if (shadowFound != null) {
-                    makeElementVisibleJsWithLog(shadowFound, keyName, attempt);
-                    if (shadowFound.isDisplayed()) {
-                        log.info("✔ [{}] Deneme {}: '{}' elementi shadow DOM içinde görünür hale getirildi.", attempt, attempt, keyName);
-                        return shadowFound;
-                    }
-                }
-
-                Thread.sleep(pollIntervalMs); // ⏳ bekleme
-
-            } catch (org.openqa.selenium.StaleElementReferenceException e) {
-                log.warn("⚠ [{}] Deneme {}: '{}' elementi stale oldu, shadow DOM içinde tekrar aranacak...", attempt, attempt, keyName);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new RuntimeException("Retry interrupted for element: " + keyName, e);
-            }
-        }
-
-        throw new RuntimeException("'" + keyName + "' elementi görünür hale getirilemedi (timeout: " + timeoutS + "s)");
-    }
-    /** DOM veya shadow içinde arama (iframe recursive dahil) */
+     * DOM veya shadow içinde arama (iframe recursive dahil)
+     * */
     private WebElement findElementInDomOrShadow(By locator, String keyName, int attempt) {
         List<WebElement> elements = driver.findElements(locator);
         if (!elements.isEmpty()) {
@@ -156,7 +78,9 @@ public class InteractionHelper {
         }
         return null;
     }
-    /** Shadow DOM içinde global arama (stale veya DOM'da yoksa) */
+    /**
+     * Shadow DOM içinde global arama (stale veya DOM'da yoksa)
+     * */
     private WebElement findElementInShadowGlobally(By locator, String keyName, int attempt) {
         log.info("➡ [{}] Deneme {}: '{}' elementi shadow DOM içinde global aranıyor...", attempt, attempt, keyName);
         List<WebElement> shadowHosts = driver.findElements(By.cssSelector("*"));
@@ -174,7 +98,9 @@ public class InteractionHelper {
         log.info("ℹ [{}] Deneme {}: '{}' shadow DOM içinde bulunamadı.", attempt, attempt, keyName);
         return null;
     }
-    /** By locator’ı CSS selector string’e çevir (sadece basit id veya class için) */
+    /**
+     * By locator’ı CSS selector string’e çevir (sadece basit id veya class için)
+     * */
     private String locatorToCss(By locator) {
         String locatorStr = locator.toString();
         if (locatorStr.startsWith("By.id:")) {
@@ -188,7 +114,9 @@ public class InteractionHelper {
             return "*"; // fallback
         }
     }
-    /** Shadow DOM kontrolü + log */
+    /**
+     * Shadow DOM kontrolü + log
+     * */
     private WebElement fetchFromShadowWithLog(WebElement element, String keyName, int attempt) {
         Boolean isShadow = (Boolean) ((JavascriptExecutor) driver)
                 .executeScript("return arguments[0].shadowRoot != null;", element);
@@ -201,7 +129,9 @@ public class InteractionHelper {
         }
         return element;
     }
-    /** JS ile görünür yap + log */
+    /**
+     * JS ile görünür yap + log
+     * */
     private void makeElementVisibleJsWithLog(WebElement element, String keyName, int attempt) {
         log.info("➡ [{}] Deneme {}: '{}' elementi JS ile görünür hale getiriliyor...", attempt, attempt, keyName);
         ((JavascriptExecutor) driver).executeScript(
@@ -412,7 +342,9 @@ public class InteractionHelper {
         }
         return Integer.parseInt(value);
     }
-    /** Eğer element Shadow DOM içindeyse, gerçek DOM elementine güvenli erişim */
+    /**
+     * Eğer element Shadow DOM içindeyse, gerçek DOM elementine güvenli erişim
+     * */
     public WebElement getElementFromShadowDom(WebElement shadowHost, String cssSelectorInsideShadow) {
         try {
             String script = "return arguments[0].shadowRoot.querySelector(arguments[1]);";

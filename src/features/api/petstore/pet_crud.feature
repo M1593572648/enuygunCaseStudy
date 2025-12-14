@@ -1,4 +1,4 @@
-@petstore
+@Regression
 @crud
 Feature: Petstore Pet CRUD Operations
 
