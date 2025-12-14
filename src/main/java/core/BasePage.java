@@ -1,6 +1,7 @@
 package core;
 
 import config.ConfigManager;
+import core.drivers.DriverFactory;
 import core.helpers.*;
 import core.helpers.WaitHelper;
 import core.managers.FileManager;
@@ -31,8 +32,8 @@ public class BasePage {
      * @param driver    WebDriver instance
      * @param jsonFiles JSON dosyaları (bir veya birden fazla)
      */
-    public BasePage(WebDriver driver, String... jsonFiles) {
-        this.driver = driver;
+    public BasePage (WebDriver driver, String... jsonFiles) {
+        this.driver = DriverFactory.getDriver();
 
         // ---- Helpers ----
         this.waitHelper = new WaitHelper(driver);
@@ -78,7 +79,7 @@ public class BasePage {
 
         // Yeni driver oluştur
         WebDriver newDriver = driverSupplier.get();
-
+        DriverFactory.setDriver(newDriver); // ThreadLocal’u güncelle
         // BasePage içindeki driver ve helper'ları güncelle
         this.driver = newDriver;
         this.clickHelper = new ClickHelper(newDriver);

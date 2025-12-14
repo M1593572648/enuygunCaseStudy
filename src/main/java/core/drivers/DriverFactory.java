@@ -117,5 +117,15 @@ public class DriverFactory {
             log.warn("Driver zaten null, quit edilemiyor");
         }
     }
-
+    // ====================================================================
+    // SET DRIVER
+    // ====================================================================
+    public static void setDriver(WebDriver newDriver) {
+        if (newDriver != null) {
+            driver.set(newDriver);
+            log.info("✔ ThreadLocal driver güncellendi");
+        } else {
+            log.warn("⚠ setDriver çağrıldı ama driver null");
+        }
+    }
 }
