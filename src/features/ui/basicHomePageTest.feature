@@ -46,7 +46,7 @@ Feature: Automated Data Analysis of Flight Search and Filtering Results
       | Istanbul  | Ankara    | 2026-01-01    | 2026-01-10 |    600         |    1080       |
       #| Ankara    | Istanbul |
 
-  #Case 3
+  #Case 3 Critical Path Testing
   @Smoke
   Scenario Outline:Time filter and Price Sorting for Turkish Airlines and Select flight
     Given user is on the home page
